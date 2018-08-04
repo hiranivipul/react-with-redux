@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {updateUser} from './actions/user-action'
+import {updateUser, apiRequest} from './actions/user-action'
+import {createSelector} from 'reselect'
 
 class App extends Component {
     constructor(props) {
@@ -33,18 +33,29 @@ class App extends Component {
     }
 }
 
-const mapStateToProps = (state, props) => {
-    return {
-        products: state.products,
-        user: state.user
-    }
+const productSelector = createSelector(
+    state => state.products,
+    products => products
+)
+
+const userSelector = createSelector(
+    state => state.user,
+    user => user
+)
+
+const mapStateToProps = createSelector(
+    productSelector,
+    userSelector,
+    (products, user) => ({
+        products,
+        user
+    })
+)
+
+const mapActionToProps = {
+    onUpdateUser: updateUser,
+    onApiRequest: apiRequest
 }
 
-const mapActionToProps = (dispatch, props) => {
-    console.log(props);
-    return bindActionCreators({
-        onUpdateUser: updateUser
-    },dispatch)
-}
 
 export default connect(mapStateToProps, mapActionToProps)(App);

@@ -5,7 +5,8 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import {Provider} from 'react-redux'
 
-import {combineReducers, createStore} from 'redux'
+import thunk from 'redux-thunk'
+import {combineReducers, createStore, applyMiddleware, compose} from 'redux'
 import productsReducer from './reducers/product-reducer'
 import userReducer from './reducers/user-reducer'
 
@@ -16,13 +17,18 @@ const allReducers = combineReducers({
     products: productsReducer
 })
 
+const allStoreEnhancers = compose(
+    applyMiddleware(thunk),
+    window.devToolsExtension && window.devToolsExtension(),
+)
+
 const store = createStore(
     allReducers,
     {
         products: [{name: 'iphone'}],
-        user: 'vipul'
+        user: 'Admin'
     },
-    window.devToolsExtension && window.devToolsExtension(),
+   allStoreEnhancers
 );
 
 ReactDOM.render(<Provider store={store}><App aRendomProps='whatever'/></Provider>, document.getElementById('root'));
